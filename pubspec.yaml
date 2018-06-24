@@ -1,16 +1,21 @@
 name: flutter_state
-description: A lightweight framework for stateless UI in Flutter, and an alternative to Redux.
+description: "🦋 A lightweight framework for stateless UI in Flutter, and an alternative to Redux."
 version: 0.0.1
-author:
-homepage:
+author: Tobechukwu Osakwe <thosakwe@gmail.com>
+homepage: https://github.com/thosakwe/flutter_state
 
 dependencies:
   flutter:
     sdk: flutter
+  meta: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+environment:
+  sdk: ">=2.0.0-dev.28.0 <3.0.0"
+  flutter: ">=0.1.4 <2.0.0"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

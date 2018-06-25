@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/example_flutter/example_flutter.iml" filepath="$PROJECT_DIR$/example_flutter/example_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/flutter_immutable_state/flutter_immutable_state.iml" filepath="$PROJECT_DIR$/flutter_immutable_state/flutter_immutable_state.iml" />
+      <module fileurl="file://$PROJECT_DIR$/immutable_state/immutable_state.iml" filepath="$PROJECT_DIR$/immutable_state/immutable_state.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tool/tool.iml" filepath="$PROJECT_DIR$/tool/tool.iml" />
+    </modules>
+  </component>
+</project>

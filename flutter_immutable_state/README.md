@@ -1,22 +1,17 @@
-# flutter_state
+# flutter_immutable_state
+
+[![Pub](https://img.shields.io/pub/v/flutter_immutable_state.svg)](https://pub.dartlang.org/packages/flutter_immutable_state)
+
+[![build status](https://travis-ci.org/thosakwe/immutable_state.svg)](https://travis-ci.org/thosakwe/immutable_state)
 
 🦋 A lightweight framework for stateless UI in Flutter, and an alternative to Redux.
 
-**Marked as beta until tests are published, and Travis is set up.**
-
 # Why?
-UI state management in complex applications is a solved problem. Immutable application state,
-combined with asynchronous, functional updates, is generally the way to go.
+View the rationale, along with the documentation for the underlying
+`package:immutable_state` library at the homepage:
+https://github.com/thosakwe/immutable_state
 
-Perhaps the most common implementation of such a pattern is Redux, which is commonly used with
-React.
-
-Redux, though, comes with a lot of boilerplate, in addition to not being well-suited for an
-object-oriented language like Dart.
-
-The solution outlined in `flutter_state` is simple - to use built-in functionality from
-`dart:async` to handle updates, and to use the `InheritedWidget` pattern to inject application
-state everywhere.
+This package is useless without understanding of the purpose thereof.
 
 # Usage
 To inject an application state into the tree, simply use the `ImmutableManager<T>` widget.
@@ -36,6 +31,26 @@ void main() {
       dates: [],
     ),
   ));
+}
+```
+
+Where your `ExampleApp` might look like:
+
+```dart
+class ExampleApp extends StatelessWidget {
+  final AppState initialValue;
+
+  const ExampleApp({Key key, this.initialValue}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ImmutableManager<AppState>(
+      initialValue: initialValue,
+      child: MaterialApp(
+        home: HomeScreen(),
+      ),
+    );
+  }
 }
 ```
 

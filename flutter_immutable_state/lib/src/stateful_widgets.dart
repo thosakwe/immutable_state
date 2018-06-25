@@ -57,14 +57,14 @@ class ImmutableManagerState<T> extends State<ImmutableManager<T>> {
 
   /// Triggers a state change.
   void change(T value) {
-      //print('Got: $value');
-      if (widget.immutable != null) {
-        this.value = value;
-        widget.immutable.change((_) => value);
-        setState(() => this.value = value);
-      } else {
-        setState(() => this.value = value);
-      }
+    //print('Got: $value');
+    if (widget.immutable != null) {
+      this.value = value;
+      widget.immutable.change((_) => value);
+      setState(() => this.value = value);
+    } else {
+      setState(() => this.value = value);
+    }
   }
 
   bool compare(ImmutableManagerState<T> other) {
@@ -83,7 +83,7 @@ class InheritedImmutableState<T> extends InheritedWidget {
   static Immutable<T> of<T>(BuildContext context) {
     final Type type = new InheritedImmutableState<T>(null, null).runtimeType;
     var inherited = context.inheritFromWidgetOfExactType(type)
-    as InheritedImmutableState<T>;
+        as InheritedImmutableState<T>;
     var managerState = inherited?.state;
 
     /*var managerState =

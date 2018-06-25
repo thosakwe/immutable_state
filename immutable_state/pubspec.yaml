@@ -3,5 +3,7 @@ description: "🎯 A lightweight framework for stateless UI in Dart and Flutter,
 version: 1.0.0
 author: Tobechukwu Osakwe <thosakwe@gmail.com>
 homepage: https://github.com/thosakwe/immutable_state
+environment:
+  sdk: ">=1.8.0 <3.0.0"
 dev_dependencies:
   test: ^1.0.0

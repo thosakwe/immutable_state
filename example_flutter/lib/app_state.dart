@@ -23,4 +23,3 @@ class AppState {
     return 'AppState($title, $checked, $dates)';
   }
 }
-

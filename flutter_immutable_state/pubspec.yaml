@@ -6,8 +6,7 @@ homepage: https://github.com/thosakwe/flutter_state
 dependencies:
   flutter:
     sdk: flutter
-  immutable_state:
-    path: ../immutable_state
+  immutable_state: ^1.0.0
   meta: ^1.0.0
 dev_dependencies:
   flutter_test:

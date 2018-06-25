@@ -10,8 +10,8 @@ class ImmutableView<T> extends StatelessWidget {
   const ImmutableView({@required this.builder, Key key}) : super(key: key);
 
   /// Creates an [ImmutableView] that only accesses the current value, and is guaranteed to never update the [Immutable].
-  factory ImmutableView.readOnly(Widget Function(BuildContext, T) builder,
-          {Key key}) =>
+  factory ImmutableView.readOnly(
+          {@required Widget Function(BuildContext, T) builder, Key key}) =>
       new ImmutableView<T>(
           builder: (context, state) => builder(context, state.current),
           key: key);
@@ -27,6 +27,7 @@ class ImmutablePropertyManager<T, U> extends StatelessWidget {
   final U Function(T) current;
   final T Function(T, U) change;
   final Widget child;
+
   //final Widget Function(BuildContext, Immutable<U>) builder;
 
   const ImmutablePropertyManager(

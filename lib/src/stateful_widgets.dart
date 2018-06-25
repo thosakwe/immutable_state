@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_state/flutter_state.dart';
 import 'package:meta/meta.dart' hide Immutable;
@@ -51,28 +50,30 @@ class ImmutableManagerState<T> extends State<ImmutableManager<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return new Builder(
-        builder: (_) => new InheritedImmutableManager<T>(this, widget.child));
-  }
+  Widget build(BuildContext context) =>
+      new InheritedImmutableState(this, widget.child);
 
   /// Triggers a state change.
   void change(T value) {
-    if (widget.immutable != null) {
-      widget.immutable.change((_) => value);
-    } else {
-      setState(() => this.value = value);
-    }
+    setState(() {
+      print('Got: $value');
+      if (widget.immutable != null) {
+        this.value = value;
+        widget.immutable.change((_) => value);
+      } else {
+        this.value = value;
+      }
+    });
   }
 }
 
-class InheritedImmutableManager<T> extends InheritedWidget {
+class InheritedImmutableState<T> extends InheritedWidget {
   final ImmutableManagerState<T> state;
+  final Widget child;
 
-  InheritedImmutableManager(this.state, Widget child, {Key key})
-      : super(key: key, child: child);
+  InheritedImmutableState(this.state, this.child) : super(child: child);
 
   @override
-  bool updateShouldNotify(InheritedImmutableManager<T> oldWidget) =>
-      state.value != oldWidget.state.value;
+  bool updateShouldNotify(InheritedImmutableState<T> oldWidget) =>
+      oldWidget.state.value != state.value;
 }

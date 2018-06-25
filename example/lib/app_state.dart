@@ -9,12 +9,18 @@ class AppState {
   AppState(
       {@required this.title, @required this.checked, @required this.dates});
 
-  AppState changeTitle(String newUsername) =>
-      new AppState(title: newUsername, checked: checked, dates: dates);
+  AppState changeTitle(String newTitle) =>
+      new AppState(title: newTitle, checked: checked, dates: dates);
 
   AppState changeChecked(bool newChecked) =>
       new AppState(title: title, checked: newChecked, dates: dates);
 
   AppState changeDates(List<DateTime> newDates) =>
       new AppState(title: title, checked: checked, dates: newDates);
+
+  @override
+  String toString() {
+    return 'AppState($title, $checked, $dates)';
+  }
 }
+

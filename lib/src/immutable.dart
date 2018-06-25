@@ -13,16 +13,14 @@ class Immutable<T> {
 
   /// Gets the [Immutable] associated with this build context.
   static Immutable<T> of<T>(BuildContext context) {
-    var inheritedManager =
-        context.inheritFromWidgetOfExactType(InheritedImmutableManager)
-            as InheritedImmutableManager<T>;
+    var managerState =
+        context.inheritFromWidgetOfExactType(ImmutableManagerState)
+            as ImmutableManagerState<T>;
 
-    if (inheritedManager == null) {
+    if (managerState == null) {
       throw new StateError(
-          'This widget does not inherit from an ImmutableManager<$T>, but Immutable.of<$T> was called.');
+          'This widget does not inherit from an InheritedImmutableState<$T>, but Immutable.of<$T> was called.');
     }
-
-    var managerState = inheritedManager.state;
 
     if (managerState.widget.immutable != null)
       return managerState.widget.immutable;
@@ -30,7 +28,7 @@ class Immutable<T> {
     var immutable = new Immutable(managerState.value);
     managerState.toClose.add(immutable);
     immutable.onChange.listen((value) {
-      immutable._onChange.close();
+      immutable.close();
       managerState.change(value);
     });
     return immutable;
@@ -49,7 +47,8 @@ class Immutable<T> {
 
   /// Disposes of this [Immutable], and of any children.
   void close() {
-    if (!_isClosed) return;
+    if (_isClosed) return;
+    print('Closing $hashCode');
     _isClosed = true;
     _children.forEach((s) => s.close());
     _onChange.close();
@@ -60,7 +59,10 @@ class Immutable<T> {
 
   /// Asynchronously signal that the value of this [Immutable] has changed.
   void change(T Function(T) update) {
-    _onChange.add(update(_current));
+    if (!_onChange.isClosed) {
+      print('New from $hashCode: ${update(_current)}');
+      _onChange.add(update(_current));
+    }
   }
 
   /// Returns an immutable wrapper over a value that, in most use cases, is a property of [current].

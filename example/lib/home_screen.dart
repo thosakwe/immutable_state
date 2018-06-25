@@ -8,19 +8,25 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ImmutableView<AppState>((context, state) {
       // We can create a child state that modifies the title.
-      var titleState = state.property<String>(
+      //
+      // By passing an `ImmutableManager<String>` pointing to this child state down the tree,
+      // we can have child widgets access infinitely nested parts of a single
+      // application state.
+      var titleImmutable = state.property<String>(
         (state) => state.title,
         change: (state, title) => state.changeTitle(title),
       );
 
-
       return Scaffold(
         appBar: AppBar(
-          title: Text(titleState.current),
+          title: Text(titleImmutable.current),
         ),
-        body: new Column(
+        body: Column(
           children: <Widget>[
-
+            ImmutableManager(
+              immutable: titleImmutable,
+              child: TitleEditor(),
+            ),
           ],
         ),
       );

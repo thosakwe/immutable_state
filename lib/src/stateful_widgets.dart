@@ -34,6 +34,8 @@ class ImmutableManagerState<T> extends State<ImmutableManager<T>> {
   final List<Immutable> toClose = [];
   T value;
 
+  T get trueValue => widget.immutable?.current ?? value;
+
   @override
   void initState() {
     super.initState();
@@ -51,19 +53,23 @@ class ImmutableManagerState<T> extends State<ImmutableManager<T>> {
 
   @override
   Widget build(BuildContext context) =>
-      new InheritedImmutableState(this, widget.child);
+      new InheritedImmutableState<T>(this, widget.child);
 
   /// Triggers a state change.
   void change(T value) {
-    setState(() {
-      print('Got: $value');
+      //print('Got: $value');
       if (widget.immutable != null) {
         this.value = value;
         widget.immutable.change((_) => value);
+        setState(() => this.value = value);
       } else {
-        this.value = value;
+        setState(() => this.value = value);
       }
-    });
+  }
+
+  bool compare(ImmutableManagerState<T> other) {
+    //print('$trueValue vs ${other.trueValue}');
+    return other.trueValue == trueValue;
   }
 }
 
@@ -74,6 +80,7 @@ class InheritedImmutableState<T> extends InheritedWidget {
   InheritedImmutableState(this.state, this.child) : super(child: child);
 
   @override
-  bool updateShouldNotify(InheritedImmutableState<T> oldWidget) =>
-      oldWidget.state.value != state.value;
+  bool updateShouldNotify(InheritedImmutableState<T> oldWidget) {
+    return state.compare(oldWidget.state);
+  }
 }

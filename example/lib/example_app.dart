@@ -10,7 +10,7 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImmutableManager<dynamic>(
+    return ImmutableManager<AppState>(
       initialValue: initialValue,
       child: MaterialApp(
         home: HomeScreen(),

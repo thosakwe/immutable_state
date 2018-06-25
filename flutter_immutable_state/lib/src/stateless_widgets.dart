@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:immutable_state/immutable_state.dart';
 import 'package:meta/meta.dart' hide Immutable;
-import 'immutable.dart';
 import 'stateful_widgets.dart';
 
 /// A "functional" [Widget] that produces a view of an [Immutable] object.
@@ -18,7 +18,7 @@ class ImmutableView<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return builder(context, Immutable.of<T>(context));
+    return builder(context, InheritedImmutableState.of<T>(context));
   }
 }
 

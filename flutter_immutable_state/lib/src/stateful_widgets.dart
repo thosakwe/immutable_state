@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_state/flutter_state.dart';
+import 'package:immutable_state/immutable_state.dart';
 import 'package:meta/meta.dart' hide Immutable;
 
 /// A [StatefulWidget] that injects an [Immutable] wrapping the state of an application.
@@ -78,6 +78,34 @@ class InheritedImmutableState<T> extends InheritedWidget {
   final Widget child;
 
   InheritedImmutableState(this.state, this.child) : super(child: child);
+
+  /// Gets the [Immutable] associated with this build context.
+  static Immutable<T> of<T>(BuildContext context) {
+    final Type type = new InheritedImmutableState<T>(null, null).runtimeType;
+    var inherited = context.inheritFromWidgetOfExactType(type)
+    as InheritedImmutableState<T>;
+    var managerState = inherited?.state;
+
+    /*var managerState =
+        context.ancestorStateOfType(new TypeMatcher<ImmutableManagerState<T>>())
+            as ImmutableManagerState<T>;*/
+
+    if (managerState == null) {
+      throw new StateError(
+          'This widget does not inherit from an InheritedImmutableState<$T>, but Immutable.of<$T> was called.');
+    }
+
+    if (managerState.widget.immutable != null)
+      return managerState.widget.immutable;
+
+    var immutable = new Immutable(managerState.value);
+    managerState.toClose.add(immutable);
+    immutable.onChange.listen((value) {
+      immutable.close();
+      managerState.change(value);
+    });
+    return immutable;
+  }
 
   @override
   bool updateShouldNotify(InheritedImmutableState<T> oldWidget) {

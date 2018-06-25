@@ -64,25 +64,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.4"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_state:
-    dependency: "direct main"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "1.0.0-beta"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -130,6 +116,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.2"
+  immutable_state:
+    dependency: "direct main"
+    description:
+      path: "../immutable_state"
+      relative: true
+    source: path
+    version: "1.0.0-beta"
   io:
     dependency: transitive
     description:
@@ -166,7 +159,7 @@ packages:
     source: hosted
     version: "0.12.2+1"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       url: "https://pub.dartlang.org"

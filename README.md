@@ -1,8 +1,9 @@
-# flutter_state
+# immutable_state
 
-🦋 A lightweight framework for stateless UI in Flutter, and an alternative to Redux.
+🎯 A lightweight framework for UI state management in Flutter and Dart, and an alternative to Redux.
 
-**Marked as beta until tests are published, and Travis is set up.**
+`package:immutable_state` can be used by itself easily, or with ready-made integrations like
+`package:flutter_immutable_state`.
 
 # Why?
 UI state management in complex applications is a solved problem. Immutable application state,
@@ -14,112 +15,91 @@ React.
 Redux, though, comes with a lot of boilerplate, in addition to not being well-suited for an
 object-oriented language like Dart.
 
-The solution outlined in `flutter_state` is simple - to use built-in functionality from
-`dart:async` to handle updates, and to use the `InheritedWidget` pattern to inject application
-state everywhere.
+The solution outlined in `immutable_state` is simple - to use built-in functionality from
+`dart:async` to handle atomic updates.
 
 # Usage
-To inject an application state into the tree, simply use the `ImmutableManager<T>` widget.
-
-For example:
+The root of functionality in this package is the `Immutable<T>` class. It is a single-use-only,
+immutable wrapper around an arbitrary Dart object that fires an event when its value is updated. As one
+can imagine, this works well with value classes (immutable classes that override the `==` operator),
+whether hand-written, or generated through libraries like `angel_serialize` or `built_value`.
 
 ```dart
-import 'package:flutter/material.dart';
-import 'app_state.dart';
-import 'example_app.dart';
-
-void main() {
-  runApp(ExampleApp(
-    initialValue: new AppState(
-      title: 'Hello, immutables!',
-      checked: false,
-      dates: [],
-    ),
-  ));
+main() async {
+  var imm = new Immutable<int>(2);
+  
+  print(imm.current); // Prints '2'
+  
+  imm.change((n) => n * 2);
+  print(await imm.onChange.first); // Prints `4`
+  
+  imm.replace(4); // Shorthand for writing an entirely new value.
 }
 ```
 
-To access the current value of the state, you simply need an `ImmutableView<T>`.
-The `builder` callback can be used to query the current state and render a view:
+## Properties and Nesting
+The real value of `package:immutable_state` is the ability of `Immutable<T>` to create infinitely-nested
+wrappers over smaller parts of an overall application state. This is analogous to `combineReducers` from
+the ever-popular Redux.
+
+For example, if you have an `AppState` class as follows:
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_state/flutter_state.dart';
-import 'app_state.dart';
+class AppState {
+  final TitleState titleState;
 
-class TitleEditor extends StatelessWidget {
-  const TitleEditor();
+  AppState({this.titleState});
 
   @override
-  Widget build(BuildContext context) {
-    return ImmutableView<AppState>(
-      builder: (context, immutable) {
-        return TextField(
-          onChanged: (title) => immutable.change((s) => s.changeTitle(title)),
-          controller: new TextEditingController(text: immutable.current.title),
-        );
-      },
-    );
-  }
+  bool operator ==(other) =>
+      other is AppState && other.titleState == titleState;
+
+  AppState changeTitleState(TitleState titleState) =>
+      new AppState(titleState: titleState);
 }
-```
 
-By using the `Immutable<T>.change` method, you can update the state with a modified version of
-the current one. However, there are often cases where you need read-only access only, and writing
-data is unnecessary. For such a case, call `ImmutableView<T>.readOnly`:
+class TitleState {
+  final String title;
 
-```dart
-Widget build(BuildContext contet) {
-  return new ImmutableView<AppState>.readOnly(
-    builder: (context, state) {
-      return Text(state.title);
-    },
-  );
-}
-```
+  TitleState({this.title});
 
-# Nesting and Properties
-Redux is nice, in part because of its `combineReducers` functionality, which allows
-you to split application logic into smaller units. In Dart, this doesn't map so well,
-as objects need to have specific type, and the language has no concept of a
-spread operator.
-
-For this, the `Immutable<T>` class has a method `property` that produces a child immutable
-that points to a property of the main state. This child state can also process updates, thereby
-triggering a change in the parent. Through the use of `Immutable<T>.property`, you can build
-infinitely-nested trees of immutable application state.
-
-Because of how often this is used, the `ImmutablePropertyManager<T>` class exists:
-
-```dart
-class HomeScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return ImmutableView<AppState>(
-      builder: (context, immutable) {
-        return Scaffold(
-          body: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                TitleEditor(),
-                CheckedView(),
+  bool operator ==(other) => other is TitleState && other.title == title;
 
-                // We can create a child state that modifies the title.
-                //
-                // By passing an `ImmutableManager<String>` pointing to this child state down the tree,
-                // we can have child widgets access infinitely nested parts of a single
-                // application state.
-                ImmutablePropertyManager<AppState, List<DateTime>>(
-                  current: (state) => state.dates,
-                  child: DateView(),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  TitleState changeTitle(String title) => new TitleState(title: title);
 }
 ```
+
+You will likely have components/widgets in your UI that solely deal with `AppState.titleState`, and
+therefore don't need access to the rest of the application state.
+
+By calling `Immutable<T>.property`, you can create a scoped state that propagates changes to its parent:
+
+```dart
+main() async {
+    var appState = new Immutable<AppState>(
+      new AppState(
+        titleState: new TitleState(
+          title: 'Hello!',
+        ),
+      ),
+    );
+    
+    titleState = appState.property<TitleState>(
+      (state) => state.titleState,
+    );
+    
+    // By default, property states are read-only, for convenience.
+    //
+    // To handle changes, simply provide a `change`
+    // callback that updates the parent state.
+    titleState = appState.property<TitleState>(
+      (state) => state.titleState,
+      change: (state, titleState) => state.changeTitleState(titleState),
+    );
+}
+```
+
+The returned value in the above example is an `Immutable<TitleState>`, and UI elements can use
+it without even knowing about the existence of the entire `AppState`. This separation of concerns
+can be very beneficial in complex applications with many parts of its application state.

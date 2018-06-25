@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'stateful_widgets.dart';
 
 /// An immutable wrapper around a Dart object; it fires an event on update.
 class Immutable<T> {
@@ -10,34 +8,6 @@ class Immutable<T> {
   T _current;
 
   Immutable(this._current);
-
-  /// Gets the [Immutable] associated with this build context.
-  static Immutable<T> of<T>(BuildContext context) {
-    final Type type = new InheritedImmutableState<T>(null, null).runtimeType;
-    var inherited = context.inheritFromWidgetOfExactType(type)
-        as InheritedImmutableState<T>;
-    var managerState = inherited?.state;
-
-    /*var managerState =
-        context.ancestorStateOfType(new TypeMatcher<ImmutableManagerState<T>>())
-            as ImmutableManagerState<T>;*/
-
-    if (managerState == null) {
-      throw new StateError(
-          'This widget does not inherit from an InheritedImmutableState<$T>, but Immutable.of<$T> was called.');
-    }
-
-    if (managerState.widget.immutable != null)
-      return managerState.widget.immutable;
-
-    var immutable = new Immutable(managerState.value);
-    managerState.toClose.add(immutable);
-    immutable.onChange.listen((value) {
-      immutable.close();
-      managerState.change(value);
-    });
-    return immutable;
-  }
 
   /// The current value of this [Immutable].
   T get current => _current;

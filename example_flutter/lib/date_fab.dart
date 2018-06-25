@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_state/flutter_state.dart';
+import 'package:flutter_immutable_state/flutter_immutable_state.dart';
 import 'app_state.dart';
 
 class DateFab extends StatelessWidget {

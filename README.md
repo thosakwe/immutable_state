@@ -1,6 +1,7 @@
 # immutable_state
 
 [![Pub](https://img.shields.io/pub/v/immutable_state.svg)](https://pub.dartlang.org/packages/immutable_state)
+
 [![build status](https://travis-ci.org/thosakwe/immutable_state.svg)](https://travis-ci.org/thosakwe/immutable_state)
 
 🎯 A lightweight framework for UI state management in Flutter and Dart, and an alternative to Redux.

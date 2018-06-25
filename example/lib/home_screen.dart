@@ -23,7 +23,6 @@ class HomeScreen extends StatelessWidget {
                 TitleEditor(),
                 CheckedView(),
 
-
                 // We can create a child state that modifies the title.
                 //
                 // By passing an `ImmutableManager<String>` pointing to this child state down the tree,

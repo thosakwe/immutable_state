@@ -1,6 +1,6 @@
 name: flutter_state
 description: "🦋 A lightweight framework for stateless UI in Flutter, and an alternative to Redux."
-version: 1.0.0
+version: 1.0.0-beta
 author: Tobechukwu Osakwe <thosakwe@gmail.com>
 homepage: https://github.com/thosakwe/flutter_state
 

@@ -2,6 +2,8 @@
 
 🦋 A lightweight framework for stateless UI in Flutter, and an alternative to Redux.
 
+**Marked as beta until tests are published, and Travis is set up.**
+
 # Why?
 UI state management in complex applications is a solved problem. Immutable application state,
 combined with asynchronous, functional updates, is generally the way to go.

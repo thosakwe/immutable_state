@@ -6,9 +6,9 @@ void main() {
   Immutable<TitleState> titleState;
 
   setUp(() {
-    appState = new Immutable(
-      new AppState(
-        titleState: new TitleState(
+    appState = Immutable(
+      AppState(
+        titleState: TitleState(
           title: 'Hello!',
         ),
       ),
@@ -37,8 +37,8 @@ void main() {
     expect(
       appState.onChange.first,
       completion(
-        new AppState(
-          titleState: new TitleState(
+        AppState(
+          titleState: TitleState(
             title: 'world',
           ),
         ),
@@ -50,16 +50,10 @@ void main() {
     int newLength;
 
     var lengthState = titleState.property(
-      (state) => state.title.length,
-      change: (state, length) {
-        newLength = length;
-      },
+      (state) => newLength ?? state.title.length,
     );
 
     expect(lengthState.current, titleState.current.title.length);
-    lengthState.replace(-12345678);
-    await appState.onChange.first;
-    expect(newLength, -12345678);
   });
 }
 
@@ -73,7 +67,7 @@ class AppState {
       other is AppState && other.titleState == titleState;
 
   AppState changeTitleState(TitleState titleState) =>
-      new AppState(titleState: titleState);
+      AppState(titleState: titleState);
 }
 
 class TitleState {
@@ -84,5 +78,5 @@ class TitleState {
   @override
   bool operator ==(other) => other is TitleState && other.title == title;
 
-  TitleState changeTitle(String title) => new TitleState(title: title);
+  TitleState changeTitle(String title) => TitleState(title: title);
 }

@@ -1,9 +1,9 @@
 import 'package:immutable_state/immutable_state.dart';
 
 void main() {
-  var appState = new Immutable(
-    new AppState(
-      titleState: new TitleState(
+  var appState = Immutable(
+    AppState(
+      titleState: TitleState(
         title: 'Hello!',
       ),
     ),
@@ -11,7 +11,8 @@ void main() {
 
   var titleState = appState.property(
     (state) => state.titleState,
-    change: (state, titleState) => state.changeTitleState(titleState),
+    change: (state, TitleState titleState) =>
+        state.changeTitleState(titleState),
   );
 
   // Changes propagate to the parent...
@@ -28,7 +29,7 @@ class AppState {
       other is AppState && other.titleState == titleState;
 
   AppState changeTitleState(TitleState titleState) =>
-      new AppState(titleState: titleState);
+      AppState(titleState: titleState);
 }
 
 class TitleState {
@@ -39,5 +40,5 @@ class TitleState {
   @override
   bool operator ==(other) => other is TitleState && other.title == title;
 
-  TitleState changeTitle(String title) => new TitleState(title: title);
+  TitleState changeTitle(String title) => TitleState(title: title);
 }

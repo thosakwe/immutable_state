@@ -3,7 +3,7 @@ import 'dart:async';
 /// An immutable wrapper around a Dart object; it fires an event on update.
 class Immutable<T> {
   final List<Immutable> _children = [];
-  final StreamController<T> _onChange = new StreamController<T>(sync: true);
+  final StreamController<T> _onChange = StreamController<T>(sync: true);
   bool _isClosed = false;
   T _current;
 
@@ -29,13 +29,13 @@ class Immutable<T> {
     _onChange.close();
   }
 
-  /// Shorthand for calling [change] with a completely new value.
+  /// Shorthand for calling [change] with a completely value.
   void replace(T newValue) => change((_) => newValue);
 
   /// Asynchronously signal that the value of this [Immutable] has changed.
   void change(T Function(T) update) {
     if (!_onChange.isClosed) {
-      //print('New from $hashCode: ${update(_current)}');
+      //print('from $hashCode: ${update(_current)}');
       _onChange.add(update(_current));
     }
   }
@@ -47,7 +47,7 @@ class Immutable<T> {
   ///
   /// If no [change] function is provided, then the child state will be completely immutable.
   Immutable<U> property<U>(U Function(T) current, {T Function(T, U) change}) {
-    var state = new Immutable<U>(current(this.current));
+    var state = Immutable<U>(current(this.current));
     _children.add(state);
     if (change == null) return state.._onChange.close();
     return state..onChange.listen((u) => this.change((t) => change(t, u)));
